@@ -1,0 +1,16 @@
+{
+    "workspace": {
+        "members": [
+            "./apps/bot",
+            "./packages/types"
+        ]
+    },
+    "compilerOptions": {
+        "erasableSyntaxOnly": true,
+        "strict": true,
+        "lib": [
+            "deno.ns",
+            "dom"
+        ]
+    }
+}
