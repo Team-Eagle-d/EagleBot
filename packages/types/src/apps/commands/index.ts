@@ -1,0 +1,1 @@
+export type { CommandFile } from "./command-file.ts";
