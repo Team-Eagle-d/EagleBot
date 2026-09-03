@@ -82,7 +82,7 @@ export class EagleBot {
         if(!this.bot) {
             this.commandMap = new Map();
             this.handler = new _EagleBotCommandHandler(this.commandMap);
-            this.bot = __getBot(this.handler, this.getBotData);
+            this.bot = __getBot(this.handler, () => this.getBotData());
             this.upTimeStart = Date.now();
         }
 
