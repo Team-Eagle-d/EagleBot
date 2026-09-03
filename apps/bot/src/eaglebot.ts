@@ -1,8 +1,8 @@
-// @eaglebot/types
-import type { CommandFile, ExtractDesiredProperties, ExtractDesiredPropertiesBehavior, CommandBotData } from "@eaglebot/types/bot";
-
 // Discordeno
 import { createBot, Interaction, InteractionTypes, SetupDesiredProps, User } from "@discordeno/bot";
+
+// @eaglebot/types
+import type { CommandFile, ExtractDesiredProperties, ExtractDesiredPropertiesBehavior, CommandBotData } from "@eaglebot/types/bot";
 
 // @std
 import { join, toFileUrl } from "@std/path";

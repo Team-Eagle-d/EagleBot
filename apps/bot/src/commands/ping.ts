@@ -1,5 +1,10 @@
+// Discordeno
 import { avatarUrl, createEmbeds, EmbedsBuilder, snowflakeToTimestamp } from "@discordeno/bot";
+
+// eaglebot wrapped types
 import type { EagleBotCommandFile } from "../eaglebot.ts";
+
+// eaglebot util
 import { getDuration } from "../utils/get-duration.ts";
 
 type _GetEmbedsData = {
