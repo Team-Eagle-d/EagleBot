@@ -34,7 +34,7 @@ export default {
         };
     },
     async execute(bot, interaction, botData) {
-        const { performance } = await calcPerformance(interaction.defer, false);
+        const { performance } = await calcPerformance(interaction.defer.bind(interaction), false);
 
         const totalShards = bot.gateway.calculateTotalShards();
         const shardId = bot.gateway.calculateShardId(interaction.guild.id, totalShards);
