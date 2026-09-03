@@ -1,6 +1,5 @@
 import { createEmbeds, EmbedsBuilder, snowflakeToTimestamp } from "@discordeno/bot";
 import type { EagleBotCommandFile } from "../eaglebot.ts";
-import { calcPerformance } from "../utility/calc-performance.ts";
 import { getDuration } from "../utility/get-duration.ts";
 
 type _GetEmbedsData = {
