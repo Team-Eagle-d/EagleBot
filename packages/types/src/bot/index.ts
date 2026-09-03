@@ -1,2 +1,2 @@
 export * from "./commands/index.ts";
-export * from "./utility/index.ts";
+export * from "./utils/index.ts";
