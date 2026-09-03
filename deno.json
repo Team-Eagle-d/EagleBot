@@ -9,8 +9,7 @@
         "erasableSyntaxOnly": true,
         "strict": true,
         "lib": [
-            "deno.ns",
-            "dom"
+            "deno.ns"
         ]
     }
 }
