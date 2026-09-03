@@ -7,6 +7,7 @@
     "pg": "npm:pg@^8.23.0"
   },
   "tasks": {
-    "start": "deno run -R -N -E --env-file=./.env --watch-hmr=**/*.ts ./src/index.ts"
+    "start": "deno run -R -N -E --env-file=./.env ./src/index.ts",
+    "start:dev": "deno run -R -N -E --env-file=./.env --watch=**/*.ts ./src/index.ts"
   }
 }

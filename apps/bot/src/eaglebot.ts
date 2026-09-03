@@ -1,27 +1,96 @@
 // @eaglebot/types
-import type { CommandFile, ExtractDesiredProperties, ExtractDesiredPropertiesBehavior } from "@eaglebot/types/apps";
+import type { CommandFile, ExtractDesiredProperties, ExtractDesiredPropertiesBehavior, CommandBotData } from "@eaglebot/types/bot";
 
 // Discordeno
-import { createBot, Interaction, InteractionTypes, SetupDesiredProps } from "@discordeno/bot";
+import { createBot, Interaction, InteractionTypes, SetupDesiredProps, User } from "@discordeno/bot";
 
 // @std
 import { join, toFileUrl } from "@std/path";
 
-export class EagleBot {
-    private static readonly commandMap:Map<string, EagleBotCommandFile> = new Map();
-    private static __bot:ReturnType<typeof this.__getBot>;
-    public static get bot():typeof this.__bot {
-        if(!this.__bot) {
-            throw "봇이 초기화되지 않았습니다.";
-        }
+function __getBot(handler:_EagleBotCommandHandler, getBotData:() => CommandBotData<Props, PropsBehavior>) {
+    const bot = createBot({
+        token: Deno.env.get("BOT_TOKEN")!,
+        events: {
+            ready: (payload, _) => {
+                bot.logger.info(`[Log In]: Logged in as ${payload.user.username} (${payload.user.id})`);
+            },
+            interactionCreate: async (interaction) => {
+                switch(interaction.type) {
+                    case InteractionTypes.ApplicationCommand:
+                        await handler.handleAppInteraction(bot, interaction, getBotData());
+                        break;
 
-        return this.__bot;
+                    default:
+                        break;
+                }
+            }
+        },
+        desiredProperties: {
+            user: {
+                id: true,
+                username: true,
+                globalName: true,
+                avatar: true,
+                discriminator: true
+            },
+            guild: {
+                id: true
+            },
+            interaction: {
+                id: true,
+                data: true,
+                type: true,
+                token: true,
+                channelId: true,
+                guild: true
+            },
+            message: {
+                id: true,
+                components: true,
+                author: true,
+                channelId: true
+            }
+        }
+    });
+
+    return bot;
+}
+
+class _EagleBotCommandHandler {
+    private readonly commandMap:EagleBotCommandMap;
+
+    constructor(commandMap:EagleBotCommandMap) {
+        this.commandMap = commandMap;
     }
 
+    public async handleAppInteraction(bot:EagleBotType, interaction:EagleBotInteraction, botData:CommandBotData<Props, PropsBehavior>):Promise<void> {
+        const command = this.commandMap.get(interaction.data?.name ?? "");
+        if(!command) {
+            bot.logger.error(`[Application Interaction Handler]: '${interaction.data?.name}' Slash Command는 존재하지 않습니다.`);
+            return;
+        }
+
+        await command.execute(bot, interaction, botData);
+    }
+}
+
+export class EagleBot {
+    private static commandMap:Map<string, EagleBotCommandFile>;
+    private static bot:EagleBotType;
+    private static handler:_EagleBotCommandHandler;
+
+    // bot datas
+    private static upTimeStart:number;
+    private static me:EagleBotUser;
 
     public static async init() {
-        if(!this.__bot) {
-            this.__bot = this.__getBot();
+        if(!this.bot) {
+            this.commandMap = new Map();
+            this.handler = new _EagleBotCommandHandler(this.commandMap);
+            this.bot = __getBot(this.handler, () => this.getBotData());
+            this.upTimeStart = Date.now();
+
+            this.me = await this.bot.helpers.getUser(this.bot.id);
         }
 
         await this.setUpCommandMap();
@@ -29,50 +98,7 @@ export class EagleBot {
     }
 
     public static async start() {
-        await this.__bot.start();
-    }
-
-    private static __getBot() {
-        const bot = createBot({
-            token: Deno.env.get("BOT_TOKEN")!,
-            events: {
-                ready: (payload, _) => {
-                    bot.logger.info(`[Log In]: Logged in as ${payload.user.username} (${payload.user.id})`);
-                },
-                interactionCreate: async (interaction) => {
-                    switch(interaction.type) {
-                        case InteractionTypes.ApplicationCommand:
-                            await this.__handleAppInteraction(interaction);
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            },
-            desiredProperties: {
-                user: {
-                    id: true,
-                    username: true,
-                    globalName: true
-                },
-                interaction: {
-                    id: true,
-                    data: true,
-                    type: true,
-                    token: true,
-                    channelId: true
-                },
-                message: {
-                    id: true,
-                    components: true,
-                    author: true,
-                    channelId: true
-                }
-            }
-        });
-
-        return bot;
+        await this.bot.start();
     }
 
     public static async setUpCommandMap():Promise<void> {
@@ -81,22 +107,22 @@ export class EagleBot {
             const commandFile = (await import(toFileUrl(join(folderPath, file.name)).href)).default;
 
             if(!commandFile.id) {
-                this.__bot.logger.warn(`[Command Setup]: '${file.name}'에 'id' 필드가 존재하지 않습니다.`);
+                this.bot.logger.warn(`[Command Setup]: '${file.name}'에 'id' 필드가 존재하지 않습니다.`);
                 continue;
             }
 
             if(!commandFile.getCommandData) {
-                this.__bot.logger.warn(`[Command Setup]: '${file.name}'에 'getCommandData' 메서드가 존재하지 않습니다.`);
+                this.bot.logger.warn(`[Command Setup]: '${file.name}'에 'getCommandData' 메서드가 존재하지 않습니다.`);
                 continue;
             }
 
             if(!commandFile.execute) {
-                this.__bot.logger.warn(`[Command Setup]: '${file.name}'에 'execute' 메서드가 존재하지 않습니다.`);
+                this.bot.logger.warn(`[Command Setup]: '${file.name}'에 'execute' 메서드가 존재하지 않습니다.`);
                 continue;
             }
 
             this.commandMap.set(commandFile.id, commandFile);
-            this.__bot.logger.info(`[Command Setup]: ${commandFile.id} command map 등록 완료.`);
+            this.bot.logger.info(`[Command Setup]: ${commandFile.id} command map 등록 완료.`);
         }
     }
 
@@ -108,30 +134,30 @@ export class EagleBot {
             }
         );
 
-        await this.__bot.helpers.upsertGuildApplicationCommands("1414284595918016647", commandDatas);
+        await this.bot.helpers.upsertGuildApplicationCommands("1414284595918016647", commandDatas);
 
-        this.__bot.logger.info(`[Upsert Command]: Update/Insert 완료.`);
+        this.bot.logger.info(`[Upsert Command]: Update/Insert 완료.`);
     }
 
-    private static async __handleAppInteraction(interaction:EagleBotInteraction):Promise<void> {
-        const command = this.commandMap.get(interaction.data?.name ?? "");
-        if(!command) {
-            this.__bot.logger.error(`[Application Interaction Handler]: '${interaction.data?.name}' Slash Command는 존재하지 않습니다.`);
-            return;
-        }
-
-        await command.execute(this.__bot, interaction);
+    private static getBotData():CommandBotData<Props, PropsBehavior> {
+        return {
+            upTimeStart: this.upTimeStart,
+            me: this.me,
+            eaglebotColor: 0xB97A56
+        };
     }
 }
 
 // bot types
-type EagleBotType = typeof EagleBot.bot;
+type EagleBotType = ReturnType<typeof __getBot>;
+type EagleBotCommandMap = Map<string, EagleBotCommandFile>;
 type Props = ExtractDesiredProperties<EagleBotType>;
 type PropsBehavior = ExtractDesiredPropertiesBehavior<EagleBotType>;
 
 // inner types
-export type EagleBotLogger = Extract<typeof EagleBot.bot.logger, object>;
+export type EagleBotLogger = Extract<ReturnType<typeof __getBot>["logger"], object>;
 export type EagleBotInteraction = SetupDesiredProps<Interaction, Props, PropsBehavior>;
+export type EagleBotUser = SetupDesiredProps<User, Props, PropsBehavior>;
 
 // wrapper
-export type EagleBotCommandFile = CommandFile<EagleBotType, EagleBotInteraction>;
+export type EagleBotCommandFile = CommandFile<Props, PropsBehavior>;
