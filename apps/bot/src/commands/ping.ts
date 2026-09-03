@@ -1,14 +1,16 @@
-import { createEmbeds, EmbedsBuilder, snowflakeToTimestamp } from "@discordeno/bot";
+import { avatarUrl, createEmbeds, EmbedsBuilder, snowflakeToTimestamp } from "@discordeno/bot";
 import type { EagleBotCommandFile } from "../eaglebot.ts";
-import { getDuration } from "../utility/get-duration.ts";
+import { getDuration } from "../utils/get-duration.ts";
 
 type _GetEmbedsData = {
+    readonly imgUrl:string,
+    readonly color:number,
     readonly performance:number,
     readonly roundTripTime?:number,
     readonly upTimeDuration:string,
     readonly now:number
 };
-export function _getEmbeds(isShardUndefined:boolean, embedData:_GetEmbedsData):EmbedsBuilder {
+function _getEmbeds(isShardUndefined:boolean, embedData:_GetEmbedsData):EmbedsBuilder {
     const title = "퐁!";
     const description = "저 아직 살아 있어요!";
     const latencyText = `**${embedData.performance}ms**`;
@@ -16,8 +18,10 @@ export function _getEmbeds(isShardUndefined:boolean, embedData:_GetEmbedsData):E
 
     const embeds = createEmbeds().setTitle(title)
         .setDescription(description)
-        .addField("지연", latencyText, false)
-        .addField("서버 지연(Heartbeat RTT)", rttText, false)
+        .setThumbnail(embedData.imgUrl)
+        .setColor(embedData.color)
+        .addField("지연", latencyText, true)
+        .addField("서버 지연(Heartbeat RTT)", rttText, true)
         .addField("봇 가동 시간", embedData.upTimeDuration, false)
         .setTimestamp(embedData.now);
 
@@ -47,6 +51,10 @@ export default {
         if(shard === undefined) {
             bot.logger.error(`[ping Application Command]: ${shardId}번 shard를 찾을 수 없습니다.`)
             embeds = _getEmbeds(false, {
+                imgUrl: avatarUrl(botData.me.id, botData.me.discriminator, {
+                    avatar: botData.me.avatar
+                }),
+                color: botData.eaglebotColor,
                 performance,
                 roundTripTime: 0,
                 upTimeDuration: getDuration(now - botData.upTimeStart),
@@ -55,6 +63,10 @@ export default {
         }
         else {
             embeds = _getEmbeds(true, {
+                imgUrl: avatarUrl(botData.me.id, botData.me.discriminator, {
+                    avatar: botData.me.avatar
+                }),
+                color: botData.eaglebotColor,
                 performance,
                 roundTripTime: shard.heart.rtt,
                 upTimeDuration: getDuration(now - botData.upTimeStart),

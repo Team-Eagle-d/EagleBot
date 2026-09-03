@@ -2,12 +2,12 @@
 import type { CommandFile, ExtractDesiredProperties, ExtractDesiredPropertiesBehavior, CommandBotData } from "@eaglebot/types/bot";
 
 // Discordeno
-import { createBot, Interaction, InteractionTypes, SetupDesiredProps } from "@discordeno/bot";
+import { createBot, Interaction, InteractionTypes, SetupDesiredProps, User } from "@discordeno/bot";
 
 // @std
 import { join, toFileUrl } from "@std/path";
 
-function __getBot(handler:_EagleBotCommandHandler, getBotData:() => CommandBotData) {
+function __getBot(handler:_EagleBotCommandHandler, getBotData:() => CommandBotData<Props, PropsBehavior>) {
     const bot = createBot({
         token: Deno.env.get("BOT_TOKEN")!,
         events: {
@@ -29,7 +29,9 @@ function __getBot(handler:_EagleBotCommandHandler, getBotData:() => CommandBotDa
             user: {
                 id: true,
                 username: true,
-                globalName: true
+                globalName: true,
+                avatar: true,
+                discriminator: true
             },
             guild: {
                 id: true
@@ -61,7 +63,7 @@ class _EagleBotCommandHandler {
         this.commandMap = commandMap;
     }
 
-    public async handleAppInteraction(bot:EagleBotType, interaction:EagleBotInteraction, botData:CommandBotData):Promise<void> {
+    public async handleAppInteraction(bot:EagleBotType, interaction:EagleBotInteraction, botData:CommandBotData<Props, PropsBehavior>):Promise<void> {
         const command = this.commandMap.get(interaction.data?.name ?? "");
         if(!command) {
             bot.logger.error(`[Application Interaction Handler]: '${interaction.data?.name}' Slash Command는 존재하지 않습니다.`);
@@ -75,8 +77,11 @@ class _EagleBotCommandHandler {
 export class EagleBot {
     private static commandMap:Map<string, EagleBotCommandFile>;
     private static bot:EagleBotType;
-    private static upTimeStart:number;
     private static handler:_EagleBotCommandHandler;
+
+    // bot datas
+    private static upTimeStart:number;
+    private static me:EagleBotUser;
 
     public static async init() {
         if(!this.bot) {
@@ -84,6 +89,8 @@ export class EagleBot {
             this.handler = new _EagleBotCommandHandler(this.commandMap);
             this.bot = __getBot(this.handler, () => this.getBotData());
             this.upTimeStart = Date.now();
+
+            this.me = await this.bot.helpers.getUser(this.bot.id);
         }
 
         await this.setUpCommandMap();
@@ -132,9 +139,11 @@ export class EagleBot {
         this.bot.logger.info(`[Upsert Command]: Update/Insert 완료.`);
     }
 
-    private static getBotData():CommandBotData {
+    private static getBotData():CommandBotData<Props, PropsBehavior> {
         return {
-            upTimeStart: this.upTimeStart
+            upTimeStart: this.upTimeStart,
+            me: this.me,
+            eaglebotColor: 0xB97A56
         };
     }
 }
@@ -148,6 +157,7 @@ type PropsBehavior = ExtractDesiredPropertiesBehavior<EagleBotType>;
 // inner types
 export type EagleBotLogger = Extract<ReturnType<typeof __getBot>["logger"], object>;
 export type EagleBotInteraction = SetupDesiredProps<Interaction, Props, PropsBehavior>;
+export type EagleBotUser = SetupDesiredProps<User, Props, PropsBehavior>;
 
 // wrapper
-export type EagleBotCommandFile = CommandFile<EagleBotType, EagleBotInteraction>;
+export type EagleBotCommandFile = CommandFile<Props, PropsBehavior>;
