@@ -2,7 +2,9 @@
     "workspace": {
         "members": [
             "./apps/bot",
-            "./packages/types"
+            "./packages/types",
+            "./packages/constants",
+            "./packages/utils"
         ]
     },
     "compilerOptions": {
