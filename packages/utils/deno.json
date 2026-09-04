@@ -1,7 +1,0 @@
-{
-    "name": "@eaglebot/utils",
-    "version": "0.1.0",
-    "exports": {
-        "./shared": "./src/shared/index.ts"
-    }
-}
