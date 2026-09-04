@@ -1,0 +1,7 @@
+{
+    "name": "@eaglebot/constants",
+    "version": "0.1.0",
+    "exports": {
+        "./bot": "./src/bot/index.ts"
+    }
+}

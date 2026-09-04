@@ -1,11 +1,24 @@
 // Discordeno
 import { avatarUrl, createEmbeds, EmbedsBuilder, snowflakeToTimestamp } from "@discordeno/bot";
 
-// eaglebot wrapped types
-import type { EagleBotCommandFile } from "../eaglebot.ts";
+// @eaglebot/types
+import type { CommandVisualData } from "@eaglebot/types/bot";
 
-// eaglebot util
-import { getDuration } from "../utils/get-duration.ts";
+// @eaglebot/constants
+import { CategoryType } from "@eaglebot/constants/bot";
+
+// eaglebot derived types
+import type { EagleBotCommandFileDefault } from "../eaglebot/index.ts";
+
+// @eaglebot/utils
+import { getDuration } from "@eaglebot/utils/shared";
+
+export const id = "ping";
+
+export const commandVisualData:CommandVisualData = {
+    "name": "ping",
+    "category": CategoryType.GENERAL
+};
 
 type _GetEmbedsData = {
     readonly imgUrl:string,
@@ -34,11 +47,10 @@ function _getEmbeds(isShardUndefined:boolean, embedData:_GetEmbedsData):EmbedsBu
 }
 
 export default {
-    id: "ping",
     getCommandData() {
         return {
-            name: this.id,
-            description: "\"퐁!\"으로 답장합니다."
+            name: "ping",
+            description: "\"퐁!\" 반환하기"
         };
     },
     async execute(bot, interaction, botData) {
@@ -83,4 +95,4 @@ export default {
             embeds
         });
     }
-} satisfies EagleBotCommandFile;
+} satisfies EagleBotCommandFileDefault;

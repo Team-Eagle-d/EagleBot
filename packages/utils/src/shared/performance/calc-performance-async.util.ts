@@ -1,4 +1,4 @@
-export async function calcPerformance<TResult, TArgs extends unknown[]>(
+export async function calcPerformanceAsync<TResult, TArgs extends unknown[]>(
     asyncFunc:(...args:TArgs) => Promise<TResult>,
     ...args:TArgs
 ):Promise<{
