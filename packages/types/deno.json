@@ -1,0 +1,10 @@
+{
+    "name": "@eaglebot/types",
+    "version": "0.1.0",
+    "exports": {
+        "./bot": "./src/bot/index.ts"
+    },
+    "imports": {
+        "@discordeno/bot": "npm:@discordeno/bot@^21.0.0"
+    }
+}
