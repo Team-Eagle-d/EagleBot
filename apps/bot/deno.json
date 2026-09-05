@@ -4,7 +4,7 @@
     "@std/path": "jsr:@std/path@^1.1.6",
     "drizzle-kit": "npm:drizzle-kit@^0.31.10",
     "drizzle-orm": "npm:drizzle-orm@^0.45.2",
-    "pg": "npm:pg@^8.23.0"
+    "postgres": "npm:postgres@^3.4.9"
   },
   "tasks": {
     "start": "deno run -R -N -E --env-file=./.env ./src/index.ts",
