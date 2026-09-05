@@ -13,21 +13,22 @@
 ## 3. 모델 및 관계
 - Server
     - id(PK): INT
+    - discordServerId: BIGINT
 
 - ServerUser
-    - discordId(FK): VARCHAR(32)
-    - serverId(FK): INT
+    - discordServerId(FK): BIGINT
+    - discordUserId(FK): BIGINT
     - level: INT
     - xp: INT
     - money: INT
 
 - User
     - id(PK): INT
-    - discordId: VARCHAR(32)
+    - discordUserId: BIGINT
 
 - Attendance
-    - discordId(FK): VARCHAR(32)
-    - serverId(FK): INT
+    - discordServerId(FK): BIGINT
+    - discordUserId(FK): BIGINT
     - checkedAt: TIMESTAMP
 
 Server와 User는 M:N의 관계를 지닙니다.
