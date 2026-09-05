@@ -27,3 +27,7 @@
     - discordId(FK): VARCHAR(32)
     - serverId(FK): INT
     - checkedAt: TIMESTAMP
+
+Server와 User는 M:N의 관계를 지닙니다.
+User와 Attendance는 1:N의 관계를 지닙니다.
+Server와 Attendance는 1:N의 관계를 지닙니다.
