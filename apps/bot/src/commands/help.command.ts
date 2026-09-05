@@ -1,5 +1,5 @@
 // Discordeno
-import { ApplicationCommandOptionChoice, /* ApplicationCommandOptionTypes, */ avatarUrl, createEmbeds } from "@discordeno/bot";
+import { /* ApplicationCommandOptionChoice, ApplicationCommandOptionTypes, */ avatarUrl, createEmbeds } from "@discordeno/bot";
 
 // @eaglebot/types
 import { CommandVisualData } from "@eaglebot/types/bot";
@@ -17,30 +17,31 @@ export const commandVisualData:CommandVisualData = {
     "category": CategoryType.GENERAL
 };
 
-function _getHelpChoices(commandManager:EagleBotCommandManager):ApplicationCommandOptionChoice[] {
-    const keys = commandManager.getCommandIds();
-    const choices:ApplicationCommandOptionChoice[] = [];
-    for(const key of keys) {
-        const commandVisualData = commandManager.getCommandVisualData(key);
+// function _getHelpChoices(commandManager:EagleBotCommandManager):ApplicationCommandOptionChoice[] {
+//     const keys = commandManager.getCommandIds();
+//     const choices:ApplicationCommandOptionChoice[] = [];
+//     for(const key of keys) {
+//         const commandVisualData = commandManager.getCommandVisualData(key);
 
-        if(!commandVisualData) {
-            continue;
-        }
+//         if(!commandVisualData) {
+//             continue;
+//         }
 
-        choices.push({
-            name: commandVisualData.name,
-            value: key
-        });
-    }
+//         choices.push({
+//             name: commandVisualData.name,
+//             value: key
+//         });
+//     }
 
-    return choices;
-}
+//     return choices;
+// }
 
 export default {
     getCommandData() {
         return {
             name: "help",
             description: "도움말 출력하기",
+            // 커맨드가 더 추가될 때 추가합니다.
             // options: [
             //     {
             //         name: "command",
