@@ -19,8 +19,8 @@
     - discordServerId(FK): BIGINT
     - discordUserId(FK): BIGINT
     - level: INT
-    - xp: INT
-    - money: INT
+    - xp: BIGINT
+    - money: BIGINT
 
 - User
     - id(PK): INT
