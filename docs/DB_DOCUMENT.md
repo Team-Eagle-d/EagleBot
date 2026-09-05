@@ -16,8 +16,8 @@
     - discordServerId: BIGINT
 
 - ServerUser
-    - discordServerId(FK): BIGINT
-    - discordUserId(FK): BIGINT
+    - discordServerId(PK, FK): BIGINT
+    - discordUserId(PK, FK): BIGINT
     - level: INT
     - xp: BIGINT
     - money: BIGINT
@@ -27,8 +27,9 @@
     - discordUserId: BIGINT
 
 - Attendance
-    - discordServerId(FK): BIGINT
-    - discordUserId(FK): BIGINT
+    - discordServerId(PK, FK): BIGINT
+    - discordUserId(PK, FK): BIGINT
+    - attendanceDate(PK): DATE
     - checkedAt: TIMESTAMP
 
 Server와 User는 M:N의 관계를 지닙니다.
