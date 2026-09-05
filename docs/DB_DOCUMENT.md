@@ -14,13 +14,16 @@
 - Server
     - id(PK): INT
 
-- User
-    - id(PK): INT
-    - discordId: VARCHAR(32)
+- ServerUser
+    - discordId(FK): VARCHAR(32)
     - serverId(FK): INT
     - level: INT
     - xp: INT
     - money: INT
+
+- User
+    - id(PK): INT
+    - discordId: VARCHAR(32)
 
 - Attendance
     - id(PK): INT
