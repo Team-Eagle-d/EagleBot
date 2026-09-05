@@ -26,7 +26,6 @@
     - discordId: VARCHAR(32)
 
 - Attendance
-    - id(PK): INT
     - discordId(FK): VARCHAR(32)
     - serverId(FK): INT
     - checkedAt: TIMESTAMP
