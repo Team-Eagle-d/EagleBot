@@ -4,7 +4,8 @@
             "./apps/bot",
             "./packages/types",
             "./packages/constants",
-            "./packages/utils"
+            "./packages/utils",
+            "./packages/database"
         ]
     },
     "compilerOptions": {
@@ -13,5 +14,12 @@
         "lib": [
             "deno.ns"
         ]
+    },
+    "tasks": {
+        "start:dev": "deno task --cwd apps/bot start:dev",
+
+        "db:generate": "deno task --cwd packages/database generate",
+        "db:migrate": "deno task --cwd packages/database migrate",
+        "db:push": "deno task --cwd packages/database push"
     }
 }
