@@ -1,0 +1,17 @@
+{
+    "name": "@eaglebot/database",
+    "version": "0.1.0",
+    "exports": {
+        "./": "./src/index.ts"
+    },
+    "imports": {
+        "drizzle-kit": "npm:drizzle-kit@^0.31.10",
+        "drizzle-orm": "npm:drizzle-orm@^0.45.2",
+        "postgres": "npm:postgres@^3.4.9"
+    },
+    "tasks": {
+        "db:generate": "deno run -A npm:drizzle-kit generate",
+        "db:migrate": "deno run -A npm:drizzle-kit migrate",
+        "db:push": "deno run -A npm:drizzle-kit push"
+    }
+}

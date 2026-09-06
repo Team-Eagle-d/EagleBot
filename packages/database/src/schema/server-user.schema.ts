@@ -2,6 +2,7 @@ import { pgTable } from "drizzle-orm/pg-core/table";
 import { bigint, integer, primaryKey } from "drizzle-orm/pg-core";
 import { user } from "./user.schema.ts";
 import { server } from "./server.schema.ts";
+import { sql } from "drizzle-orm";
 
 export const serverUser = pgTable(
     "server_user",
@@ -18,11 +19,11 @@ export const serverUser = pgTable(
             .notNull(),
         xp: bigint({
             mode: "bigint"
-        }).default(0n)
+        }).default(sql`0`)
             .notNull(),
         money: bigint({
             mode: "bigint"
-        }).default(0n)
+        }).default(sql`0`)
             .notNull()
     },
     (table) => {
