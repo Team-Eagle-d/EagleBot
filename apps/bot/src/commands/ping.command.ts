@@ -56,8 +56,6 @@ export default {
     async execute(bot, interaction, botData) {
         const now = Date.now();
 
-        await interaction.defer(false);
-
         const performance = now - snowflakeToTimestamp(interaction.id);
 
         const totalShards = bot.gateway.calculateTotalShards();
