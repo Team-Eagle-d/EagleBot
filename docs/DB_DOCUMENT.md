@@ -21,6 +21,8 @@
     - level: INT
     - xp: BIGINT
     - money: BIGINT
+    - createdAt: TIMESTAMP
+    - updatedAt: TIMESTAMP
 
 - User
     - id(PK): INT
