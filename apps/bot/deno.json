@@ -5,6 +5,7 @@
   },
   "tasks": {
     "start": "deno run -R -N -E --env-file=./.env ./src/index.ts",
-    "start:dev": "deno run -R -N -E --env-file=./.env --watch=**/*.ts ./src/index.ts"
+    "start:test": "deno run -R -N -E --env-file=./.env.test ./src/index.ts",
+    "start:test-dev": "deno run -R -N -E --env-file=./.env.test --watch=**/*.ts ./src/index.ts"
   }
 }
