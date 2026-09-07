@@ -51,7 +51,8 @@ function __getBot(commandManager:EagleBotCommandManager, commandHandler:EagleBot
                 type: true,
                 token: true,
                 channelId: true,
-                guild: true
+                guild: true,
+                user: true
             },
             message: {
                 id: true,
