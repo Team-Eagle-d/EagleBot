@@ -31,7 +31,10 @@ export const serverUser = pgTable(
             .defaultNow()
             .$onUpdateFn(() => {
                 return sql`CURRENT_TIMESTAMP`;
-            })
+            }),
+        // 출석 체크에 대한 현재 상태
+        attendanceStreak: integer("attendance_streak").notNull()
+            .default(1)
     },
     (table) => {
         return [
