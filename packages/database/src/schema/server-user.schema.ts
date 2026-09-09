@@ -1,5 +1,5 @@
 import { pgTable } from "drizzle-orm/pg-core/table";
-import { bigint, integer, primaryKey } from "drizzle-orm/pg-core";
+import { bigint, integer, primaryKey, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./user.schema.ts";
 import { server } from "./server.schema.ts";
 import { sql } from "drizzle-orm";
@@ -24,7 +24,17 @@ export const serverUser = pgTable(
         money: bigint({
             mode: "bigint"
         }).default(sql`0`)
-            .notNull()
+            .notNull(),
+        createdAt: timestamp("created_at").notNull()
+            .defaultNow(),
+        updatedAt: timestamp("updated_at").notNull()
+            .defaultNow()
+            .$onUpdateFn(() => {
+                return sql`CURRENT_TIMESTAMP`;
+            }),
+        // 출석 체크에 대한 현재 상태
+        attendanceStreak: integer("attendance_streak").notNull()
+            .default(1)
     },
     (table) => {
         return [

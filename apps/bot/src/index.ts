@@ -1,4 +1,4 @@
-import { EagleBot } from "./eaglebot/eaglebot.bot.ts";
+import { EagleBot } from "./core/index.ts";
 
 await EagleBot.init();
 await EagleBot.start();

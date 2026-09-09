@@ -2,21 +2,21 @@
 import { BotData } from "@eaglebot/types/bot";
 
 // eaglebot
-import type { EagleBotProps, EagleBotPropsBehavior, EagleBotType } from "./eaglebot.bot.ts";
+import type { EagleBotProps, EagleBotPropsBehavior, EagleBotType } from "./eaglebot.core.ts";
 
 // eaglebot derived types
-import type { EagleBotCommandFileDefault, EagleBotInteraction } from "./eaglebot.type.ts";
+import type { EagleBotCommandFileDefault, EagleBotInteraction } from "./type.core.ts";
 
 // final class
 // 싱글톤 디자인 패턴을 사용합니다.
-export class EagleBotCommandHandler {
-    private static instance:EagleBotCommandHandler;
+export class CommandHandler {
+    private static instance:CommandHandler;
 
     private constructor() {}
 
     public static get() {
         if(!this.instance) {
-            this.instance = new EagleBotCommandHandler();
+            this.instance = new CommandHandler();
         }
 
         return this.instance;
