@@ -110,7 +110,12 @@ export class CommandManager {
             }
         );
 
-        await bot.helpers.upsertGuildApplicationCommands("1414284595918016647", commandDatas);
+        if(Deno.env.get("APP_ENV") === "production") {
+            await bot.helpers.upsertGlobalApplicationCommands(commandDatas);
+        }
+        else if(Deno.env.get("APP_ENV") === "development") {
+            await bot.helpers.upsertGuildApplicationCommands(Deno.env.get("TEST_GUILD_ID")!, commandDatas);
+        }
 
         logger?.info(`[Upsert Command]: Update/Insert 완료.`);
     }

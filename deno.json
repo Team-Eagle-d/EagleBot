@@ -16,8 +16,8 @@
         ]
     },
     "tasks": {
-        "start:test": "deno task --cwd apps/bot start:test",
-        "start:test-dev": "deno task --cwd apps/bot start:test-dev",
+        "start:dev": "deno task --cwd apps/bot start:dev",
+        "start:dev-watch": "deno task --cwd apps/bot start:dev-watch",
 
         "db:generate": "deno task --env-file=./.env.migration --cwd packages/database generate --name develop",
         "db:migrate": "deno task --env-file=./.env.migration --cwd packages/database migrate",

@@ -6,8 +6,8 @@
     "drizzle-orm": "npm:drizzle-orm@^0.45.2"
   },
   "tasks": {
-    "start": "deno run -R -N -E --env-file=./.env ./src/index.ts",
-    "start:test": "deno run -R -N -E --env-file=./.env.test ./src/index.ts",
-    "start:test-dev": "deno run -R -N -E --env-file=./.env.test --watch=**/*.ts ./src/index.ts"
+    "start": "deno run -R -N -E --env-file=./.env.production ./src/index.ts",
+    "start:dev": "deno run -R -N -E --env-file=./.env.development ./src/index.ts",
+    "start:dev-watch": "deno run -R -N -E --env-file=./.env.development --watch=**/*.ts ./src/index.ts"
   }
 }
