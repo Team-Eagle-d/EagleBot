@@ -21,6 +21,8 @@
     - level: INT
     - xp: BIGINT
     - money: BIGINT
+    - attendanceStreak: INT
+      상태는 ServerUser가 지닙니다.
     - createdAt: TIMESTAMP
     - updatedAt: TIMESTAMP
 
