@@ -8,7 +8,7 @@ import { CommandVisualData } from "@eaglebot/types/bot";
 import { CategoryType } from "@eaglebot/constants/bot";
 
 // eaglebot derived types
-import { EagleBotCommandManager, type EagleBotCommandFileDefault } from "../eaglebot/index.ts";
+import { CommandManager, type EagleBotCommandFileDefault } from "../core/index.ts";
 
 export const id = "help";
 
@@ -57,7 +57,7 @@ export default {
 
         await interaction.defer();
 
-        const commandManager = EagleBotCommandManager.get();
+        const commandManager = CommandManager.get();
 
         const keys = commandManager.getCommandIds();
         const commandVisualDatas:CommandVisualData[] = [];

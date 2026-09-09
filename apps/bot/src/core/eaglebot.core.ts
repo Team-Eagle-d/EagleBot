@@ -5,13 +5,13 @@ import { createBot, InteractionTypes } from "@discordeno/bot";
 import type { ExtractDesiredProperties, ExtractDesiredPropertiesBehavior, BotData } from "@eaglebot/types/bot";
 
 // eaglebot
-import { EagleBotCommandManager } from "./eaglebot-command.manager.ts";
-import { EagleBotCommandHandler } from "./eaglebot-command.handler.ts";
+import { CommandManager } from "./command-manager.core.ts";
+import { CommandHandler } from "./command-handler.core.ts";
 
 // eaglebot derived types
-import type { EagleBotUser } from "./eaglebot.type.ts";
+import type { EagleBotUser } from "./type.core.ts";
 
-function __getBot(commandManager:EagleBotCommandManager, commandHandler:EagleBotCommandHandler, getBotData:() => BotData<EagleBotProps, EagleBotPropsBehavior>) {
+function __getBot(commandManager:CommandManager, commandHandler:CommandHandler, getBotData:() => BotData<EagleBotProps, EagleBotPropsBehavior>) {
     const bot = createBot({
         token: Deno.env.get("BOT_TOKEN")!,
         events: {
@@ -42,6 +42,10 @@ function __getBot(commandManager:EagleBotCommandManager, commandHandler:EagleBot
                 avatar: true,
                 discriminator: true
             },
+            member: {
+                id: true,
+                avatar: true,
+            },
             guild: {
                 id: true
             },
@@ -52,7 +56,8 @@ function __getBot(commandManager:EagleBotCommandManager, commandHandler:EagleBot
                 token: true,
                 channelId: true,
                 guild: true,
-                user: true
+                user: true,
+                member: true
             },
             message: {
                 id: true,
@@ -70,12 +75,12 @@ export class EagleBot {
     private static bot:EagleBotType;
 
     // bot-related
-    private static _commandManager:EagleBotCommandManager;
+    private static _commandManager:CommandManager;
     public static get commandManager() {
         return this._commandManager;
     }
     
-    private static _commandHandler:EagleBotCommandHandler;
+    private static _commandHandler:CommandHandler;
     public static get commandHandler() {
         return this._commandHandler;
     }
@@ -89,8 +94,8 @@ export class EagleBot {
     public static async init() {
         if(!this.bot) {
             // bot-related
-            this._commandManager = EagleBotCommandManager.get();
-            this._commandHandler = EagleBotCommandHandler.get();
+            this._commandManager = CommandManager.get();
+            this._commandHandler = CommandHandler.get();
 
             this.bot = __getBot(
                 this.commandManager,

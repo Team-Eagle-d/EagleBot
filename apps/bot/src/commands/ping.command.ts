@@ -8,10 +8,10 @@ import type { CommandVisualData } from "@eaglebot/types/bot";
 import { CategoryType } from "@eaglebot/constants/bot";
 
 // eaglebot derived types
-import type { EagleBotCommandFileDefault } from "../eaglebot/index.ts";
+import type { EagleBotCommandFileDefault } from "../core/index.ts";
 
 // @eaglebot/utils
-import { getDuration } from "@eaglebot/utils/shared";
+import { getDuration } from "@eaglebot/utils";
 
 export const id = "ping";
 

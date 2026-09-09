@@ -2,16 +2,16 @@
 import { CommandVisualData } from "@eaglebot/types/bot";
 
 // eaglebot derived types
-import type { EagleBotCommandFileDefault, EagleBotLogger } from "./eaglebot.type.ts";
-import { EagleBotType } from "./eaglebot.bot.ts";
+import type { EagleBotCommandFileDefault, EagleBotLogger } from "./type.core.ts";
+import { EagleBotType } from "./eaglebot.core.ts";
 
 // @std
 import { join, toFileUrl } from "@std/path";
 
 // final class
 // 싱글톤 디자인 패턴을 사용합니다.
-export class EagleBotCommandManager {
-    private static instance:EagleBotCommandManager;
+export class CommandManager {
+    private static instance:CommandManager;
     
     // 나중에 초기화됩니다.
     private commandMap!:Map<string, EagleBotCommandFileDefault>;
@@ -19,9 +19,9 @@ export class EagleBotCommandManager {
 
     private constructor() {}
 
-    public static get():EagleBotCommandManager {
+    public static get():CommandManager {
         if(!this.instance) {
-            this.instance = new EagleBotCommandManager();
+            this.instance = new CommandManager();
             this.instance.commandMap = new Map();
             this.instance.commandVisualDataMap = new Map();
         }
