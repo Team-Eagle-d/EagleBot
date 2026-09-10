@@ -84,18 +84,16 @@ export default {
         }
 
         // 로우가 하나밖에 없다면 바로 가져오는 것이 편할 테니 말이죠.
-        const curServerUser = (
-            await client.select({
-                level: serverUser.level,
-                xp: serverUser.xp,
-                money: serverUser.money,
-                attendanceStreak: serverUser.attendanceStreak
-            }).from(serverUser)
-                .where(and(
-                    eq(serverUser.discordServerId, discordServerId),
-                    eq(serverUser.discordUserId, discordUserId)
-                ))
-        )[0];
+        const [curServerUser] = await client.select({
+            level: serverUser.level,
+            xp: serverUser.xp,
+            money: serverUser.money,
+            attendanceStreak: serverUser.attendanceStreak
+        }).from(serverUser)
+            .where(and(
+                eq(serverUser.discordServerId, discordServerId),
+                eq(serverUser.discordUserId, discordUserId)
+            ));
 
         // 알고 보니 streak가 맞더라구요
         // steak인 줄 알았던 빡빡이 청년
