@@ -112,7 +112,7 @@ export class EagleBot {
         }
 
         await this._commandManager.setUpCommandMap(this.bot.logger);
-        await this._commandManager.upsertAppCommands(this.bot);
+        await this._commandManager.upsertAppCommands(this.bot, this.bot.logger);
     }
 
     public static async start() {
