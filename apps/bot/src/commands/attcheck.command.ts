@@ -9,6 +9,9 @@ import { CommandVisualData } from "@eaglebot/types/bot";
 // @eaglebot/constants
 import { CategoryType } from "@eaglebot/constants/bot";
 
+// @eaglebot/utils
+import { getFormattedDateString } from "@eaglebot/utils";
+
 // database-thingie
 import { attendance, serverUser } from "@eaglebot/database";
 import { client, ensureServerUser, getAttendanceCount, increment, isAttendanceStreak } from "../database/index.ts";
@@ -32,32 +35,6 @@ export const commandVisualData:CommandVisualData = {
     "category": CategoryType.GENERAL
 };
 
-function _getFormattedDateString(standardTimeDate:Date, timeZone:string):`${string}-${string}-${string}` {
-    // locale은 임의로 한국 기준으로 맞추었습니다.
-    const parts = new Intl.DateTimeFormat("ko-KR", {
-        timeZone: timeZone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    }).formatToParts(standardTimeDate);
-
-    const date = `${
-        parts.find((v) => {
-            return v.type === "year";
-        })!.value
-    }-${
-        parts.find((v) => {
-            return v.type === "month";
-        })!.value
-    }-${
-        parts.find((v) => {
-            return v.type === "day";
-        })!.value
-    }` as const;
-
-    return date;
-}
-
 export default {
     getCommandData() {
         return {
@@ -78,6 +55,7 @@ export default {
 
         // FK로 물리적인 관계가 있는 테이블은 그 로우가 존재하지 않을 경우 INSERT가 안 된다 하더라구요.
         await ensureServerUser(
+            client,
             discordServerId,
             discordUserId
         );
@@ -88,7 +66,7 @@ export default {
             .values({
                 discordServerId,
                 discordUserId,
-                attendanceDate: _getFormattedDateString(standardTime, "Asia/Seoul"),
+                attendanceDate: getFormattedDateString(standardTime, "Asia/Seoul"),
                 checkedAt: standardTime,
             })
             .onConflictDoNothing()
@@ -121,7 +99,7 @@ export default {
 
         // 알고 보니 streak가 맞더라구요
         // steak인 줄 알았던 빡빡이 청년
-        const attendanceStreak = await isAttendanceStreak(discordServerId, discordUserId);
+        const attendanceStreak = await isAttendanceStreak(client, discordServerId, discordUserId);
         const newAttendanceStreak = attendanceStreak ? curServerUser.attendanceStreak + 1 : 1;
 
         const xpGain = getXpGain(newAttendanceStreak);
@@ -141,7 +119,7 @@ export default {
                 eq(serverUser.discordUserId, interaction.user.id)
             ));
 
-        let description = `-# *${await getAttendanceCount(discordServerId, discordUserId)}번째 출석체크*`;
+        let description = `-# *${await getAttendanceCount(client, discordServerId, discordUserId)}번째 출석체크*`;
         if(attendanceStreak) {
             description += ` ***(${newAttendanceStreak} 연속)***`;
         }
