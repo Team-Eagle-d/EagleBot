@@ -45,6 +45,9 @@ function __getBot(commandManager:CommandManager, commandHandler:CommandHandler, 
             member: {
                 id: true,
                 avatar: true,
+                nick: true,
+                user: true,
+                joinedAt: true
             },
             guild: {
                 id: true
