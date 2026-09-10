@@ -83,44 +83,52 @@ export default {
             return;
         }
 
-        // 로우가 하나밖에 없다면 바로 가져오는 것이 편할 테니 말이죠.
-        const [curServerUser] = await client.select({
-            level: serverUser.level,
-            xp: serverUser.xp,
-            money: serverUser.money,
-            attendanceStreak: serverUser.attendanceStreak
-        }).from(serverUser)
-            .where(and(
-                eq(serverUser.discordServerId, discordServerId),
-                eq(serverUser.discordUserId, discordUserId)
-            ));
+        const [
+            description,
+            xpGain,
+            levelUpData
+        ] = await client.transaction(async (transaction) => {
+            // 로우가 하나밖에 없다면 바로 가져오는 것이 편할 테니 말이죠.
+            const [curServerUser] = await transaction.select({
+                level: serverUser.level,
+                xp: serverUser.xp,
+                money: serverUser.money,
+                attendanceStreak: serverUser.attendanceStreak
+            }).from(serverUser)
+                .where(and(
+                    eq(serverUser.discordServerId, discordServerId),
+                    eq(serverUser.discordUserId, discordUserId)
+                ));
 
-        // 알고 보니 streak가 맞더라구요
-        // steak인 줄 알았던 빡빡이 청년
-        const attendanceStreak = await isAttendanceStreak(client, discordServerId, discordUserId);
-        const newAttendanceStreak = attendanceStreak ? curServerUser.attendanceStreak + 1 : 1;
+            // 알고 보니 streak가 맞더라구요
+            // steak인 줄 알았던 빡빡이 청년
+            const attendanceStreak = await isAttendanceStreak(transaction, discordServerId, discordUserId);
+            const newAttendanceStreak = attendanceStreak ? curServerUser.attendanceStreak + 1 : 1;
 
-        const xpGain = getXpGain(newAttendanceStreak);
-        const levelUpData = calcLevelUpData(curServerUser.level, curServerUser.xp, xpGain);
+            const xpGain = getXpGain(newAttendanceStreak);
+            const levelUpData = calcLevelUpData(curServerUser.level, curServerUser.xp, xpGain);
 
-        // 고정해서 수정해야 하는 요소는 그대로 넣고,
-        // 상승시켜야 하는 요소는 increment 함수로 묶어 보냈습니다.
-        await client.update(serverUser)
-            .set({
-                level: increment(serverUser.level, levelUpData.calcIncrementLevel),
-                xp: levelUpData.calcXp,
-                money: increment(serverUser.money, MONEY_GAIN),
-                attendanceStreak: newAttendanceStreak
-            })
-            .where(and(
-                eq(serverUser.discordServerId, interaction.guild.id),
-                eq(serverUser.discordUserId, interaction.user.id)
-            ));
+            // 고정해서 수정해야 하는 요소는 그대로 넣고,
+            // 상승시켜야 하는 요소는 increment 함수로 묶어 보냈습니다.
+            await transaction.update(serverUser)
+                .set({
+                    level: increment(serverUser.level, levelUpData.calcIncrementLevel),
+                    xp: levelUpData.calcXp,
+                    money: increment(serverUser.money, MONEY_GAIN),
+                    attendanceStreak: newAttendanceStreak
+                })
+                .where(and(
+                    eq(serverUser.discordServerId, interaction.guild.id),
+                    eq(serverUser.discordUserId, interaction.user.id)
+                ));
 
-        let description = `-# *${await getAttendanceCount(client, discordServerId, discordUserId)}번째 출석체크*`;
-        if(attendanceStreak) {
-            description += ` ***(${newAttendanceStreak} 연속)***`;
-        }
+            let description = `-# *${await getAttendanceCount(transaction, discordServerId, discordUserId)}번째 출석체크*`;
+            if(attendanceStreak) {
+                description += ` ***(${newAttendanceStreak} 연속)***`;
+            }
+
+            return [description, xpGain, levelUpData];
+        });
         
         // 함수로 분리하기 귀찮더라구요.
         // 분리할 시 그 만큼 넣어줘야 하는 인자도 많아지는데,
