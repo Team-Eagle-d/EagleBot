@@ -1,11 +1,11 @@
 import { and, count, eq } from "drizzle-orm";
-import { client } from "../../client.database.ts";
+import type { EagleBotDBClient } from "../../client.database.ts";
 import { attendance } from "@eaglebot/database";
 
 /**
  * 총 출석 횟수를 가져옵니다.
  */
-export async function getAttendanceCount(discordServerId:bigint, discordUserId:bigint):Promise<number> {
+export async function getAttendanceCount(client:EagleBotDBClient, discordServerId:bigint, discordUserId:bigint):Promise<number> {
     return (
         await client.select({
             count: count()

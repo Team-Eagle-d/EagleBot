@@ -1,11 +1,11 @@
 import { attendance } from "@eaglebot/database";
-import { client } from "../../client.database.ts";
+import type { EagleBotDBClient } from "../../client.database.ts";
 import { and, desc, eq } from "drizzle-orm";
 
 /**
  * 연속 출석인 경우: true, 끊어진 경우: false
  */
-export async function isAttendanceStreak(discordServerId:bigint, discordUserId:bigint):Promise<boolean> {
+export async function isAttendanceStreak(client:EagleBotDBClient, discordServerId:bigint, discordUserId:bigint):Promise<boolean> {
     const attendanceChecks = (
         await client.select({
             attendanceDate: attendance.attendanceDate

@@ -1,7 +1,7 @@
 import { server } from "@eaglebot/database";
-import { client } from "../client.database.ts";
+import type { EagleBotDBClient } from "../client.database.ts";
 
-export async function ensureServer(discordServerId:bigint) {
+export async function ensureServer(client:EagleBotDBClient, discordServerId:bigint) {
     await client.insert(server)
         .values({
             discordServerId
