@@ -1,0 +1,12 @@
+{
+    "name": "@eaglebot/types",
+    "version": "0.1.0",
+    "exports": {
+        "./shared": "./src/shared/index.ts",
+        "./bot": "./src/bot/index.ts"
+    },
+    "imports": {
+        "@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
+        "drizzle-orm": "npm:drizzle-orm@^0.45.2"
+    }
+}

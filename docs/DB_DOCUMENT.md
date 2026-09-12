@@ -13,17 +13,29 @@
 ## 3. 모델 및 관계
 - Server
     - id(PK): INT
+    - discordServerId: BIGINT
+
+- ServerUser
+    - discordServerId(PK, FK): BIGINT
+    - discordUserId(PK, FK): BIGINT
+    - level: INT
+    - xp: BIGINT
+    - money: BIGINT
+    - attendanceStreak: INT
+      상태는 ServerUser가 지닙니다.
+    - createdAt: TIMESTAMP
+    - updatedAt: TIMESTAMP
 
 - User
     - id(PK): INT
-    - discordId: VARCHAR(32)
-    - serverId(FK): INT
-    - level: INT
-    - xp: INT
-    - money: INT
+    - discordUserId: BIGINT
 
 - Attendance
-    - id(PK): INT
-    - discordId(FK): VARCHAR(32)
-    - serverId(FK): INT
+    - discordServerId(PK, FK): BIGINT
+    - discordUserId(PK, FK): BIGINT
+    - attendanceDate(PK): DATE
     - checkedAt: TIMESTAMP
+
+Server와 User는 M:N의 관계를 지닙니다.
+User와 Attendance는 1:N의 관계를 지닙니다.
+Server와 Attendance는 1:N의 관계를 지닙니다.

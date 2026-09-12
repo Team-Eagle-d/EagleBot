@@ -1,0 +1,1 @@
+export const MONEY_GAIN = 5000n;
