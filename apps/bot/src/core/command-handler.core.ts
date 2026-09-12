@@ -1,5 +1,5 @@
 // @eaglebot/types
-import { BotData } from "@eaglebot/types/bot";
+import type { BotData } from "@eaglebot/types/bot";
 
 // eaglebot
 import type { EagleBotProps, EagleBotPropsBehavior, EagleBotType } from "./eaglebot.core.ts";

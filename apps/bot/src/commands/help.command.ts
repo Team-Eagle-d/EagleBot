@@ -2,7 +2,7 @@
 import { /* ApplicationCommandOptionChoice, ApplicationCommandOptionTypes, */ avatarUrl, createEmbeds } from "@discordeno/bot";
 
 // @eaglebot/types
-import { CommandVisualData } from "@eaglebot/types/bot";
+import type { CommandVisualData } from "@eaglebot/types/bot";
 
 // @eaglebot/constants
 import { CategoryType } from "@eaglebot/constants/bot";
@@ -92,10 +92,10 @@ export default {
         }, {} as Record<CategoryType, CommandVisualData[]>);
 
         const embeds = createEmbeds().setTitle("도움말")
-            .setColor(botData.eaglebotColor)
             .setThumbnail(avatarUrl(botData.me.id, botData.me.discriminator, {
                 avatar: botData.me.avatar
             }))
+            .setColor(botData.eaglebotColor)
             .setTimestamp(now);
 
         for(const categoryType of categoryTypes) {

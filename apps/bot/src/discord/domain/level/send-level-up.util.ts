@@ -1,5 +1,5 @@
-import { BigString, CreateMessageOptions, InteractionCallbackData } from "@discordeno/bot";
-import { EagleBotInteraction, EagleBotType } from "../../../core/index.ts";
+import type { BigString, CreateMessageOptions, InteractionCallbackData } from "@discordeno/bot";
+import type { EagleBotInteraction, EagleBotType } from "../../../core/index.ts";
 import { getLevelUpRequiredXp } from "../../../logic/level/level.logic.ts";
 
 type SendLevelUpTarget = _SendLevelUpTargetInteraction | _SendLevelUpTargetChannel;

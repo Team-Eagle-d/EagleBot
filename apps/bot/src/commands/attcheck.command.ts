@@ -4,7 +4,7 @@
 import { createEmbeds, DiscordInteractionContextType } from "@discordeno/bot";
 
 // @eaglebot/types
-import { CommandVisualData } from "@eaglebot/types/bot";
+import type { CommandVisualData } from "@eaglebot/types/bot";
 
 // @eaglebot/constants
 import { CategoryType } from "@eaglebot/constants/bot";
@@ -18,7 +18,7 @@ import { client, ensureServerUser, getAttendanceCount, increment, isAttendanceSt
 import { and, eq } from "drizzle-orm";
 
 // eaglebot derived types
-import { EagleBotCommandFileDefault } from "../core/index.ts";
+import type { EagleBotCommandFileDefault } from "../core/index.ts";
 
 // discord
 import { getMemberAvatarUrl } from "../discord/index.ts";

@@ -2,7 +2,7 @@
 import { ApplicationCommandOptionTypes, createEmbeds, DiscordInteractionContextType } from "@discordeno/bot";
 
 // @eaglebot/types
-import { CommandVisualData } from "@eaglebot/types/bot";
+import type { CommandVisualData } from "@eaglebot/types/bot";
 
 // @eaglebot/utils
 import { getFormattedDateString } from "@eaglebot/utils";
@@ -13,10 +13,10 @@ import { serverUser } from "@eaglebot/database";
 import { and, eq } from "drizzle-orm";
 
 // eaglebot derived types
-import { EagleBotCommandFileDefault } from "../core/index.ts";
+import type { EagleBotCommandFileDefault, EagleBotMember, EagleBotUser } from "../core/index.ts";
 
 // discord
-import { getMemberAvatarUrl } from "../discord/index.ts";
+import { getMemberAndUser, getMemberAvatarUrl } from "../discord/index.ts";
 
 // logic
 import { getLevelUpRequiredXp } from "../logic/level/level.logic.ts";
@@ -33,7 +33,9 @@ export default {
         return {
             name: "profile",
             description: "프로필 확인하기",
-            contexts: [DiscordInteractionContextType.Guild],
+            contexts: [
+                DiscordInteractionContextType.Guild
+            ],
             options: [
                 {
                     type: ApplicationCommandOptionTypes.User,
@@ -43,7 +45,7 @@ export default {
             ]
         };
     },
-    async execute(bot, interaction, ___) {
+    async execute(bot, interaction, botData) {
         const now = Date.now();
 
         await interaction.defer();
@@ -51,8 +53,18 @@ export default {
         const discordServerId = interaction.guild.id;
 
         const selectedDiscordUserId = interaction.data?.options?.[0]?.value as string | undefined;
-        const selectedDiscordMember = selectedDiscordUserId ? await bot.helpers.getMember(discordServerId, selectedDiscordUserId) : interaction.member!;
-        const selectedDiscordUser = selectedDiscordMember.user ?? await bot.helpers.getUser(selectedDiscordMember.id);
+
+        let selectedDiscordMember:EagleBotMember;
+        let selectedDiscordUser:EagleBotUser;
+        if(!selectedDiscordUserId || selectedDiscordUserId === String(interaction.user.id)) {
+            selectedDiscordMember = interaction.member!;
+            selectedDiscordUser = interaction.user;
+        }
+        else {
+            const memberAndUser = await getMemberAndUser(bot, discordServerId, selectedDiscordUserId);
+            selectedDiscordMember = memberAndUser[0];
+            selectedDiscordUser = memberAndUser[1];
+        }
 
         const discordUserId = selectedDiscordMember.id;
 
@@ -74,6 +86,7 @@ export default {
         
         const embeds = createEmbeds().setTitle(selectedDiscordMember.nick ?? selectedDiscordUser.globalName ?? selectedDiscordUser.username)
             .setThumbnail(getMemberAvatarUrl(discordServerId, discordUserId, selectedDiscordMember, selectedDiscordUser))
+            .setColor(botData.eaglebotColor)
             .setTimestamp(now);
         
         // 서로 연관되어 있는 합쳐져야 합니다.

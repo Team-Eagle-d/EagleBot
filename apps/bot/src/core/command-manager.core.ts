@@ -1,9 +1,9 @@
 // @eaglebot/types
-import { CommandVisualData } from "@eaglebot/types/bot";
+import type { CommandVisualData } from "@eaglebot/types/bot";
 
 // eaglebot derived types
 import type { EagleBotCommandFileDefault, EagleBotLogger } from "./type.core.ts";
-import { EagleBotType } from "./eaglebot.core.ts";
+import type { EagleBotType } from "./eaglebot.core.ts";
 
 // @std
 import { join, toFileUrl } from "@std/path";

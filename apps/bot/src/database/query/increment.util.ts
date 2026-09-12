@@ -1,6 +1,6 @@
 import { PgColumn } from "drizzle-orm/pg-core";
-import { ColumnBaseConfig, sql } from "drizzle-orm";
-import { GetPgColumnDataType } from "@eaglebot/types/shared";
+import { type ColumnBaseConfig, sql } from "drizzle-orm";
+import { type GetPgColumnDataType } from "@eaglebot/types/shared";
 
 /**
  * 매개변수를 다음과 같이 묶어 반환합니다.

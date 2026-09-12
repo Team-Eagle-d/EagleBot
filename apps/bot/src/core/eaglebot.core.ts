@@ -50,7 +50,9 @@ function __getBot(commandManager:CommandManager, commandHandler:CommandHandler, 
                 joinedAt: true
             },
             guild: {
-                id: true
+                id: true,
+                name: true,
+                icon: true
             },
             interaction: {
                 id: true,
