@@ -1,1 +1,0 @@
-export { CategoryType } from "./category-type.enum.ts";
