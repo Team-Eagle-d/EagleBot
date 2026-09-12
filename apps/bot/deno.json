@@ -9,5 +9,10 @@
     "start": "deno run -R -N -E --env-file=./.env.production ./src/index.ts",
     "start:dev": "deno run -R -N -E --env-file=./.env.development ./src/index.ts",
     "start:dev-watch": "deno run -R -N -E --env-file=./.env.development --watch=**/*.ts ./src/index.ts"
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.window"
+    ]
   }
 }
