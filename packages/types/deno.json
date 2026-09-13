@@ -7,6 +7,6 @@
     },
     "imports": {
         "@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
-        "drizzle-orm": "npm:drizzle-orm@^0.45.2"
+        "drizzle-orm": "npm:drizzle-orm@1.0.0-rc.4"
     }
 }
