@@ -8,7 +8,7 @@
 - 언어: TypeScript
 - 런타임: Deno 2
 - Discord Bot 라이브러리: Discordeno
-- ORM: Drizzle
+- ORM: Kysely
 
 ## 2. 워크스페이스 구조
 - eaglebot/
@@ -16,6 +16,9 @@
         - bot/ 독수리봇 코드 컨텐츠는 이 폴더에 들어갑니다.
     - packages/
         - types/ apps/ 프로젝트에 사용되는 공통/개별 타입 정의
+        - constants/ apps/ 프로젝트에 사용되는 공통 상수/열거형 정의
+        - database/ apps/ 프로젝트에 사용되는 DB 정의
+        - utils/ apps/ 프로젝트에 사용되는 공통 유틸리티 함수 정의
     - docs/ 여러 문서를 모아둡니다. 개인 프로젝트로 설계되었기 때문에 대부분의 문서는 공개합니다.
     - deno.json
     - README.md
