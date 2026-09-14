@@ -20,10 +20,13 @@
         "start:dev": "deno task --cwd apps/bot start:dev",
         "start:dev-watch": "deno task --cwd apps/bot start:dev-watch",
 
-        "db:generate": "deno task --env-file=./.env.migration.production --cwd packages/database generate",
+        "db:make": "deno task --env-file=./.env.migration.production --cwd packages/database make",
         "db:migrate": "deno task --env-file=./.env.migration.production --cwd packages/database migrate",
+        "db:rollback": "deno task --env-file=./.env.migration.production --cwd packages/database rollback",
+        "db:status": "deno task --env-file=./.env.migration.production --cwd packages/database status",
 
-        "db:migrate-test": "deno task --env-file=./.env.migration.development --cwd packages/database migrate",
-        "db:push-test": "deno task --env-file=./.env.migration.development --cwd packages/database push"
+        "db:migrate-dev": "deno task --env-file=./.env.migration.development --cwd packages/database migrate",
+        "db:rollback-dev": "deno task --env-file=./.env.migration.production --cwd packages/database rollback",
+        "db:status-dev": "deno task --env-file=./.env.migration.production --cwd packages/database status"
     }
 }
