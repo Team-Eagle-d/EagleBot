@@ -9,8 +9,6 @@ import { getFormattedDateString } from "@eaglebot/utils";
 
 // database-thingie
 import { client, ensureServerUser, getAttendanceCount, getLatestAttendance } from "../database/index.ts";
-import { serverUser } from "@eaglebot/database";
-import { and, eq } from "drizzle-orm";
 
 // eaglebot derived types
 import type { EagleBotCommandFileDefault, EagleBotMember, EagleBotUser } from "../core/index.ts";
@@ -71,13 +69,14 @@ export default {
         const [
             selectedServerUser,
             selectedLatestAttendance
-        ] = await client.transaction(async (transaction) => {
+        ] = await client.transaction()
+            .execute(async (transaction) => {
             await ensureServerUser(transaction, discordServerId, discordUserId);
-            const [selectedServerUser] = await transaction.select().from(serverUser)
-                .where(and(
-                    eq(serverUser.discordServerId, discordServerId),
-                    eq(serverUser.discordUserId, discordUserId)
-                ));
+            const selectedServerUser = await transaction.selectFrom("serverUser")
+                .selectAll()
+                .where("discordServerId", "=", discordServerId)
+                .where("discordUserId", "=", discordUserId)
+                .executeTakeFirstOrThrow();
 
             const selectedLatestAttendance = await getLatestAttendance(transaction, discordServerId, discordUserId);
 
@@ -107,7 +106,7 @@ export default {
                 `**${selectedServerUser.money}원**`,
                 false
             );
-        
+
         let attendanceCountDescription = `**${await getAttendanceCount(client, discordServerId, discordUserId)}번**`;
         if(selectedServerUser.attendanceStreak > 1) {
             attendanceCountDescription += ` ***(${selectedServerUser.attendanceStreak}연속)***`;
@@ -119,7 +118,7 @@ export default {
             )
             .addField(
                 "최근 출석체크",
-                selectedLatestAttendance ? `**${selectedLatestAttendance.attendanceDate}**` : "*출석 없음*",
+                selectedLatestAttendance ? `**${getFormattedDateString(new Date(selectedLatestAttendance.attendanceDate), "UTC")}**` : "*출석 없음*",
                 true
             );
 

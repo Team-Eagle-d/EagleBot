@@ -1,21 +1,19 @@
-import { attendance } from "@eaglebot/database";
 import type { EagleBotDBClient } from "../../client.database.ts";
-import { and, desc, eq } from "drizzle-orm";
 
 /**
  * 연속 출석인 경우: true, 끊어진 경우: false
  */
 export async function isAttendanceStreak(client:EagleBotDBClient, discordServerId:bigint, discordUserId:bigint):Promise<boolean> {
     const attendanceChecks = (
-        await client.select({
-            attendanceDate: attendance.attendanceDate
-        }).from(attendance)
-            .where(and(
-                eq(attendance.discordServerId, discordServerId),
-                eq(attendance.discordUserId, discordUserId)
-            ))
-            .orderBy(desc(attendance.attendanceDate))
+        await client.selectFrom("attendance")
+            .select([
+                "attendanceDate"
+            ])
+            .where("discordServerId", "=", discordServerId)
+            .where("discordUserId", "=", discordUserId)
+            .orderBy("attendanceDate", "desc")
             .limit(2)
+            .execute()
     );
 
     if(attendanceChecks.length <= 1) {

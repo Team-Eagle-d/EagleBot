@@ -2,8 +2,7 @@
   "imports": {
     "@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
     "@std/path": "jsr:@std/path@^1.1.6",
-    "drizzle-kit": "npm:drizzle-kit@^0.31.10",
-    "drizzle-orm": "npm:drizzle-orm@^0.45.2"
+    "kysely": "npm:kysely@^0.29.5"
   },
   "tasks": {
     "start": "deno run -R -N -E --env-file=./.env.production ./src/index.ts",

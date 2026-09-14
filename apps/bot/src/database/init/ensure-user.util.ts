@@ -1,10 +1,12 @@
-import { user } from "@eaglebot/database";
 import type { EagleBotDBClient } from "../client.database.ts";
 
 export async function ensureUser(client:EagleBotDBClient, discordUserId:bigint) {
-    await client.insert(user)
+    await client.insertInto("user")
         .values({
             discordUserId
         })
-        .onConflictDoNothing();
+        .onConflict((oc) => {
+            return oc.doNothing();
+        })
+        .execute();
 }

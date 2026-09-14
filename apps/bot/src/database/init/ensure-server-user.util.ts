@@ -1,4 +1,3 @@
-import { serverUser } from "@eaglebot/database";
 import { ensureServer } from "../init/ensure-server.util.ts";
 import { ensureUser } from "../init/ensure-user.util.ts";
 import type { EagleBotDBClient } from "../client.database.ts";
@@ -13,13 +12,13 @@ export async function ensureServerUser(client:EagleBotDBClient, discordServerId:
         ensureUser(client, discordUserId)
     ]);
 
-    await client.insert(serverUser)
+    await client.insertInto("serverUser")
         .values({
             discordServerId,
-            discordUserId,
-            level: 0,
-            xp: 0n,
-            money: 0n
+            discordUserId
         })
-        .onConflictDoNothing();
+        .onConflict((oc) => {
+            return oc.doNothing();
+        })
+        .execute();
 }
