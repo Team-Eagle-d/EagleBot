@@ -8,9 +8,7 @@ import type { CommandVisualData } from "@eaglebot/types/bot";
 import { CategoryType } from "@eaglebot/constants/bot";
 
 // database-thingie
-import { serverUser } from "@eaglebot/database";
 import { client } from "../database/index.ts";
-import { desc, eq } from "drizzle-orm";
 
 // eaglebot derived types
 import type { EagleBotCommandFileDefault } from "../core/index.ts";
@@ -60,10 +58,14 @@ export default {
 
         const discordServerId = interaction.guild.id;
 
-        const rank = await client.select().from(serverUser)
-            .where(eq(serverUser.discordServerId, discordServerId))
-            .orderBy(desc(serverUser.level), desc(serverUser.xp), serverUser.discordUserId)
-            .limit(10);
+        const rank = await client.selectFrom("serverUser")
+            .selectAll()
+            .where("discordServerId", "=", discordServerId)
+            .orderBy("level", "desc")
+            .orderBy("xp", "desc")
+            .orderBy("discordUserId", "asc")
+            .limit(10)
+            .execute();
 
         if(rank.length <= 0) {
             await interaction.respond({

@@ -13,9 +13,7 @@ import { CategoryType } from "@eaglebot/constants/bot";
 import { getFormattedDateString } from "@eaglebot/utils";
 
 // database-thingie
-import { attendance, serverUser } from "@eaglebot/database";
-import { client, ensureServerUser, getAttendanceCount, increment, isAttendanceStreak } from "../database/index.ts";
-import { and, eq } from "drizzle-orm";
+import { client, ensureServerUser, getAttendanceCount, isAttendanceStreak } from "../database/index.ts";
 
 // eaglebot derived types
 import type { EagleBotCommandFileDefault } from "../core/index.ts";
@@ -62,15 +60,18 @@ export default {
 
         // 초기: 한국 시간 기준으로 작업합니다.
         const standardTime = new Date(now);
-        const newAttendanceCheck = await client.insert(attendance)
+        const newAttendanceCheck = await client.insertInto("attendance")
             .values({
                 discordServerId,
-                discordUserId,
+                discordUserId, 
                 attendanceDate: getFormattedDateString(standardTime, "Asia/Seoul"),
-                checkedAt: standardTime,
+                checkedAt: standardTime
             })
-            .onConflictDoNothing()
-            .returning();
+            .onConflict((oc) => {
+                return oc.doNothing();
+            })
+            .returningAll()
+            .execute();
 
         // 만약 이미 있는 PK 조합으로 충돌되었을 경우 빈 리스트로 반환됩니다.
         // (ON CONFLICT DO NOTHING)
@@ -87,18 +88,19 @@ export default {
             description,
             xpGain,
             levelUpData
-        ] = await client.transaction(async (transaction) => {
+        ] = await client.transaction()
+            .execute(async (transaction) => {
             // 로우가 하나밖에 없다면 바로 가져오는 것이 편할 테니 말이죠.
-            const [curServerUser] = await transaction.select({
-                level: serverUser.level,
-                xp: serverUser.xp,
-                money: serverUser.money,
-                attendanceStreak: serverUser.attendanceStreak
-            }).from(serverUser)
-                .where(and(
-                    eq(serverUser.discordServerId, discordServerId),
-                    eq(serverUser.discordUserId, discordUserId)
-                ));
+            const curServerUser = await transaction.selectFrom("serverUser")
+                .select([
+                    "level",
+                    "xp",
+                    "money",
+                    "attendanceStreak"
+                ])
+                .where("discordServerId", "=", discordServerId)
+                .where("discordUserId", "=", discordUserId)
+                .executeTakeFirstOrThrow();
 
             // 알고 보니 streak가 맞더라구요
             // steak인 줄 알았던 빡빡이 청년
@@ -110,17 +112,20 @@ export default {
 
             // 고정해서 수정해야 하는 요소는 그대로 넣고,
             // 상승시켜야 하는 요소는 increment 함수로 묶어 보냈습니다.
-            await transaction.update(serverUser)
+            await transaction.updateTable("serverUser")
                 .set({
-                    level: increment(serverUser.level, levelUpData.calcIncrementLevel),
+                    level: (expressionBuilder) => {
+                        return expressionBuilder("level", "+", levelUpData.calcIncrementLevel);
+                    },
                     xp: levelUpData.calcXp,
-                    money: increment(serverUser.money, MONEY_GAIN),
+                    money: (expressionBuilder) => {
+                        return expressionBuilder("money", "+", MONEY_GAIN);
+                    },
                     attendanceStreak: newAttendanceStreak
                 })
-                .where(and(
-                    eq(serverUser.discordServerId, interaction.guild.id),
-                    eq(serverUser.discordUserId, interaction.user.id)
-                ));
+                .where("discordServerId", "=", interaction.guild.id)
+                .where("discordUserId", "=", interaction.user.id)
+                .execute();
 
             let description = `-# *${await getAttendanceCount(transaction, discordServerId, discordUserId)}번째 출석체크*`;
             if(attendanceStreak) {

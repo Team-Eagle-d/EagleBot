@@ -5,13 +5,20 @@
         ".": "./src/index.ts"
     },
     "imports": {
-        "drizzle-kit": "npm:drizzle-kit@^0.31.10",
-        "drizzle-orm": "npm:drizzle-orm@^0.45.2",
+        "kysely": "npm:kysely@^0.29.5",
+        "kysely-ctl": "npm:kysely-ctl@^0.21.0",
+        "kysely-postgres-js": "npm:kysely-postgres-js@^4.0.0",
         "postgres": "npm:postgres@^3.4.9"
     },
     "tasks": {
-        "generate": "deno run -A npm:drizzle-kit generate",
-        "migrate": "deno run -A npm:drizzle-kit migrate",
-        "push": "deno run -A npm:drizzle-kit push"
+        "make": "deno run -A npm:kysely-ctl migrate:make --config=./kysely.config.ts",
+        "migrate": "deno run -A npm:kysely-ctl migrate:latest --config=./kysely.config.ts",
+        "rollback": "deno run -A npm:kysely-ctl migrate:rollback --config=./kysely.config.ts",
+        "status": "deno run -A npm:kysely-ctl migrate:status --config=./kysely.config.ts"
+    },
+    "compilerOptions": {
+        "lib": [
+            "deno.window"
+        ]
     }
 }
