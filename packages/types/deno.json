@@ -6,7 +6,6 @@
         "./bot": "./src/bot/index.ts"
     },
     "imports": {
-        "@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
-        "drizzle-orm": "npm:drizzle-orm@1.0.0-rc.4"
+        "@discordeno/bot": "npm:@discordeno/bot@^21.0.0"
     }
 }
