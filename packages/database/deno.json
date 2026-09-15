@@ -13,8 +13,10 @@
     "tasks": {
         "make": "deno run -A npm:kysely-ctl migrate:make --config=./kysely.config.ts",
         "migrate": "deno run -A npm:kysely-ctl migrate:latest --config=./kysely.config.ts",
+        "up": "deno run -A npm:kysely-ctl migrate:up --config=./kysely.config.ts",
         "rollback": "deno run -A npm:kysely-ctl migrate:rollback --config=./kysely.config.ts",
-        "status": "deno run -A npm:kysely-ctl migrate:status --config=./kysely.config.ts"
+        "down": "deno run -A npm:kysely-ctl migrate:down --config=./kysely.config.ts",
+        "list": "deno run -A npm:kysely-ctl migrate:list --config=./kysely.config.ts"
     },
     "compilerOptions": {
         "lib": [

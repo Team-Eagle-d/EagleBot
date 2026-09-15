@@ -22,11 +22,15 @@
 
         "db:make": "deno task --env-file=./.env.migration.production --cwd packages/database make",
         "db:migrate": "deno task --env-file=./.env.migration.production --cwd packages/database migrate",
+        "db:up": "deno task --env-file=./.env.migration.production --cwd packages/database up",
         "db:rollback": "deno task --env-file=./.env.migration.production --cwd packages/database rollback",
-        "db:status": "deno task --env-file=./.env.migration.production --cwd packages/database status",
+        "db:down": "deno task --env-file=./.env.migration.production --cwd packages/database down",
+        "db:list": "deno task --env-file=./.env.migration.production --cwd packages/database list",
 
         "db:migrate-dev": "deno task --env-file=./.env.migration.development --cwd packages/database migrate",
-        "db:rollback-dev": "deno task --env-file=./.env.migration.production --cwd packages/database rollback",
-        "db:status-dev": "deno task --env-file=./.env.migration.production --cwd packages/database status"
+        "db:up-dev": "deno task --env-file=./.env.migration.development --cwd packages/database up",
+        "db:rollback-dev": "deno task --env-file=./.env.migration.development --cwd packages/database rollback",
+        "db:down-dev": "deno task --env-file=./.env.migration.development --cwd packages/database down",
+        "db:list-dev": "deno task --env-file=./.env.migration.development --cwd packages/database list"
     }
 }
